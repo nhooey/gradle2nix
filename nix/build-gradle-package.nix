@@ -85,7 +85,7 @@ let
 
   buildGradlePackage = stdenv.mkDerivation (
     finalAttrs:
-    builtins.trace "-=--=--=--=--=--=--=- gradle2nix nhooey v2 -=--=--=--=--=--=--=--=-"
+    let _ = 1; in builtins.trace "-=--=--=--=--=--=--=- gradle2nix nhooey v2 -=--=--=--=--=--=--=--=-"
     {
       inherit buildJdk gradle;
 
