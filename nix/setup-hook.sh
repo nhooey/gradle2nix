@@ -32,6 +32,32 @@ gradleConfigurePhase() {
     runHook postConfigure
 }
 
+remove_option_and_value() {
+    local option_to_remove="$1"
+    local -n array_ref="$2"
+    local new_array=()
+    local i=0
+
+    while [ $i -lt ${#array_ref[@]} ]; do
+        if [ "${array_ref[$i]}" = "$option_to_remove" ]; then
+            echo "remove_option_and_value: Deleting: [${array_ref[$i]}] [${array_ref[$i+1]}]"
+            i=$((i + 2))
+        else
+            new_array+=("${array_ref[$i]}")
+            i=$((i + 1))
+        fi
+    done
+
+    # Replace the original array with the filtered one
+    array_ref=("${new_array[@]}")
+}
+
+print_array_inline() {
+    local -n array_ref="$1"
+    printf "[%s] " "${array_ref[@]}"
+    echo  # Add newline at the end
+}
+
 gradleBuildPhase() {
     runHook preBuild
 
@@ -50,6 +76,10 @@ gradleBuildPhase() {
         fi
 
         echoCmd 'gradleBuildPhase flags' "${flagsArray[@]}"
+        print_array_inline flagsArray
+        remove_option_and_value '--console' flagsArray
+        echoCmd 'gradleBuildPhase flags (TRIMMED):' "${flagsArray[@]}"
+        print_array_inline flagsArray
 
         gradle "${flagsArray[@]}"
     fi
