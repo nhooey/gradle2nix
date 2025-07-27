@@ -6,7 +6,9 @@
   gradleSetupHook,
 }:
 
-buildGradlePackage {
+buildGradlePackage
+builtins.trace "-_-_-_-_-_-_-_-_-_-_-_-_- nhooey gradel2nix -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_"
+{
   pname = "gradle2nix";
   version = "2.0.0";
   lockFile = ../gradle.lock;
