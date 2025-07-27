@@ -100,9 +100,7 @@ let
 
       nativeBuildInputs = (args.nativeBuildInputs or [ ]) ++ [ finalAttrs.gradleSetupHook ];
 
-      gradleFlags =
-        [ "--console=plain" ]
-        ++ lib.optional (finalAttrs.buildJdk != null) "-Dorg.gradle.java.home=${finalAttrs.buildJdk.home}";
+      gradleFlags = lib.optional (finalAttrs.buildJdk != null) "-Dorg.gradle.java.home=${finalAttrs.buildJdk.home}";
 
       passthru =
         lib.optionalAttrs (offlineRepo != null) { inherit offlineRepo; } // (args.passthru or { });
