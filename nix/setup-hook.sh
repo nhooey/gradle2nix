@@ -1,5 +1,42 @@
 # shellcheck shell=bash disable=SC2206,SC2155
 
+remove_option_and_value() {
+    local option_to_remove="$1"
+    local -n truncated_array="$2"
+    local new_array=()
+    local i=0
+
+    while [ $i -lt ${#truncated_array[@]} ]; do
+        if [ "${truncated_array[$i]}" = "$option_to_remove" ]; then
+            echo "remove_option_and_value: Deleting: [${truncated_array[$i]}] [${truncated_array[$i+1]}]"
+            i=$((i + 2))
+        else
+            new_array+=("${truncated_array[$i]}")
+            i=$((i + 1))
+        fi
+    done
+
+    # Replace the original array with the filtered one
+    truncated_array=("${new_array[@]}")
+}
+
+print_array_inline() {
+    local -n print_array="$1"
+    printf "[%s] " "${print_array[@]}"
+    echo  # Add newline at the end
+}
+
+fix_flags_array() {
+    local -n build_phase="$1"
+    local -n fix_array="$2"
+
+    echoCmd "${build_phase} flags" "${fix_array[@]}"
+    remove_option_and_value '--console' fix_array
+    echoCmd "${build_phase} flags (- --console <value>):" "${fix_array[@]}"
+    fix_array+=("--continue")
+    echoCmd "${build_phase} flags (+ --continue):" "${fix_array[@]}"
+}
+
 gradleConfigurePhase() {
     runHook preConfigure
 
@@ -32,32 +69,6 @@ gradleConfigurePhase() {
     runHook postConfigure
 }
 
-remove_option_and_value() {
-    local option_to_remove="$1"
-    local -n array_ref="$2"
-    local new_array=()
-    local i=0
-
-    while [ $i -lt ${#array_ref[@]} ]; do
-        if [ "${array_ref[$i]}" = "$option_to_remove" ]; then
-            echo "remove_option_and_value: Deleting: [${array_ref[$i]}] [${array_ref[$i+1]}]"
-            i=$((i + 2))
-        else
-            new_array+=("${array_ref[$i]}")
-            i=$((i + 1))
-        fi
-    done
-
-    # Replace the original array with the filtered one
-    array_ref=("${new_array[@]}")
-}
-
-print_array_inline() {
-    local -n array_ref="$1"
-    printf "[%s] " "${array_ref[@]}"
-    echo  # Add newline at the end
-}
-
 gradleBuildPhase() {
     runHook preBuild
 
@@ -75,14 +86,7 @@ gradleBuildPhase() {
             flagsArray+=(--no-parallel)
         fi
 
-        echoCmd 'gradleBuildPhase flags' "${flagsArray[@]}"
-        print_array_inline flagsArray
-        remove_option_and_value '--console' flagsArray
-        echoCmd 'gradleBuildPhase flags (- --console <value>):' "${flagsArray[@]}"
-        print_array_inline flagsArray
-        flagsArray+=("--continue")
-        echoCmd 'gradleBuildPhase flags (+ --continue):' "${flagsArray[@]}"
-        print_array_inline flagsArray
+        fix_flags_array 'buildBuildPhase' flagsArray
 
         gradle "${flagsArray[@]}"
     fi
@@ -108,7 +112,7 @@ gradleCheckPhase() {
             flagsArray+=(--no-parallel)
         fi
 
-        echoCmd 'gradleCheckPhase flags' "${flagsArray[@]}"
+        fix_flags_array 'buildCheckPhase' flagsArray
 
         gradle "${flagsArray[@]}"
     fi
@@ -133,7 +137,7 @@ gradleInstallPhase() {
             flagsArray+=(--no-parallel)
         fi
 
-        echoCmd 'gradleInstallPhase flags' "${flagsArray[@]}"
+        fix_flags_array 'buildInstallPhase' flagsArray
 
         gradle "${flagsArray[@]}"
     fi
