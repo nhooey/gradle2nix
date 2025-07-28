@@ -21,6 +21,9 @@
         inherit (nixpkgs) lib;
       in
       {
+        postUnpack = "set -x";
+        postPatch = "set -x";
+
         builders = {
           inherit (scope) buildGradlePackage buildMavenRepo;
           default = self.packages.${system}.buildGradlePackage;
