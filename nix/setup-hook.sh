@@ -78,7 +78,10 @@ gradleBuildPhase() {
         echoCmd 'gradleBuildPhase flags' "${flagsArray[@]}"
         print_array_inline flagsArray
         remove_option_and_value '--console' flagsArray
-        echoCmd 'gradleBuildPhase flags (TRIMMED):' "${flagsArray[@]}"
+        echoCmd 'gradleBuildPhase flags (- --console <value>):' "${flagsArray[@]}"
+        print_array_inline flagsArray
+        flagsArray+=("--continue")
+        echoCmd 'gradleBuildPhase flags (+ --continue):' "${flagsArray[@]}"
         print_array_inline flagsArray
 
         gradle "${flagsArray[@]}"
