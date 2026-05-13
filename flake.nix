@@ -7,11 +7,10 @@
   };
 
   outputs =
-    {
-      self,
-      flake-utils,
-      nixpkgs,
-      ...
+    { self
+    , flake-utils
+    , nixpkgs
+    , ...
     }:
     flake-utils.lib.eachDefaultSystem (
       system:
@@ -26,7 +25,7 @@
 
         builders = {
           inherit (scope) buildGradlePackage buildMavenRepo;
-          default = self.packages.${system}.buildGradlePackage;
+          default = self.builders.${system}.buildGradlePackage;
         };
 
         packages = {
