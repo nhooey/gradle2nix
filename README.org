@@ -4,6 +4,8 @@
 
 Generate [[https://nixos.org/nix/][Nix]] expressions which build [[https://gradle.org/][Gradle]]-based projects.
 
+#+HTML: <a href="https://garnix.io/repo/nhooey/gradle2nix"><img src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fgarnix.io%2Fapi%2Fbadges%2Fnhooey%2Fgradle2nix" alt="built with garnix"/></a>
+
 ** Why?
 
 Nix is an OS-agnostic package manager, a language-agnostic build
