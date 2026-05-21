@@ -1,5 +1,3 @@
-.idea/
 .gradle/
-*.iml
 **/build/
-result
+/result
