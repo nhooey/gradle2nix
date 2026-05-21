@@ -1,0 +1,14 @@
+# Garnix CI configuration. https://garnix.io/docs/ci/yaml_config/
+#
+# One wildcard per (output-class, arch) pair the flake actually exposes.
+# Restricted to x86_64-linux to bound minute usage. The flake exposes
+# packages + apps via flake-utils' eachDefaultSystem; only the
+# x86_64-linux axis is built/cached in CI here. `branch: master`
+# restricts sandbox builds to pushes on the default branch — PR head
+# commits still get Garnix check-runs surfaced independently of this
+# filter.
+builds:
+  branch: master
+  include:
+    - "packages.x86_64-linux.*"
+  exclude: []
